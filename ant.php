@@ -4,7 +4,7 @@ class game{
 
     private $ill = ['░░', '▓▓', "@"];
     private $offset = "\n";
-    private $act = ['R', 'L'];
+    public $act = ['R', 'L'];
 
     private function check_map(){
         if($this->map)
