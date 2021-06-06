@@ -4,7 +4,7 @@ class game{
 
     private $ill = ['░░', '▓▓', "@"];
     private $offset = "\n";
-    private $act = ['R', 'R', 'L', 'L', 'L', 'R', 'L', 'L', 'L', 'R', 'R', 'R'];
+    private $act = ['R', 'L'];
 
     private function check_map(){
         if($this->map)
@@ -37,6 +37,23 @@ class game{
         return [$next, count($this->act) > $move + 1 ? $move + 1 : 0];
     }
 
+    private function check_position($pos){
+        $size = count($this->map); $add = [[0, $this->ill[0]]];
+        if($pos[0] == 0 || $pos[1] == 0){
+            for ($i=0; $i < $size; $i++) { 
+                $add[] = [0, $this->ill[0]];
+                array_unshift($this->map[$i], [0, $this->ill[0]]);
+            }
+            array_unshift($this->map, $add);
+        }elseif($pos[0] == $size - 1 || $pos[1] == $size - 1) {
+            for ($i=0; $i < $size; $i++) { 
+                $add[] = [0, $this->ill[0]];
+                $this->map[$i][] = [0, $this->ill[0]];
+            }
+            $this->map[] = $add;
+        }
+    }
+
     public function generate($size){
         for ($i=0; $i < $size; $i++) { 
             for ($j=0; $j < $size; $j++) {
@@ -57,14 +74,16 @@ class game{
                         $pos = $this->rotate($move[0], 90, $this->map[$i][$j][3]);
                         $side = $this->side($pos);
                         $map[$i + $side[0]][$j + $side[1]] = [$map[$i + $side[0]][$j + $side[1]][0], $map[$i + $side[0]][$j + $side[1]][1], $this->ill[2], $pos];$map[$i + $side[0]][$j + $side[1]] = [$map[$i + $side[0]][$j + $side[1]][0], $map[$i + $side[0]][$j + $side[1]][1], $this->ill[2], $pos];
+                        $posit = [$i, $j];
                     }
                 }
             }
         }
         $this->map = $map;
+        $this->check_position($posit);
     }
 
-    public function put_ant($position, $type = 2){
+    public function put_ant($position = [1, 1], $type = 2){
         $this->map[$position[0]][$position[1]] = [0, $this->ill[0], $this->ill[$type], 0];
     }
 
